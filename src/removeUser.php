@@ -1,11 +1,20 @@
 <?php
+declare(strict_types=1);
+
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/db.php';
+require __DIR__ . '/userRepository.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
 if ($data) {
     if (array_key_exists("user_id", $data)) {
-        removeUser($data["user_id"]);
+        $connection = pushDbConnect();
+        try {
+            deleteUserTokens($connection, $data["user_id"]);
+        } finally {
+            pg_close($connection);
+        }
     } else {
         http_response_code(400);
         echo "Invalid request. Please read the documentation in Paperparrot.",
@@ -14,16 +23,4 @@ if ($data) {
 } else {
     header("Location: https://paperparrot.me");
     die();
-}
-
-function removeUser($user_id)
-{
-    $db_user = getenv("POSTGRES_USER");
-    $db_pass = getenv("POSTGRES_PASSWORD");
-    $conn_string = "host=database port=5432 dbname=pushusers user=$db_user password=$db_pass";
-    $connection = pg_connect($conn_string);
-
-    $queryResult = pg_query($connection, "DELETE FROM usertokens 
-    WHERE user_id = '$user_id'");
-    pg_close($connection);
 }

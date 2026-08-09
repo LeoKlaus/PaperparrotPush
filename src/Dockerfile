@@ -1,4 +1,4 @@
-FROM composer:1.9.3 as vendor
+FROM composer:2 as vendor
 
 WORKDIR /tmp/
 
@@ -10,6 +10,7 @@ RUN composer install \
     --no-interaction \
     --no-plugins \
     --no-scripts \
+    --no-dev \
     --prefer-dist
 
 FROM php:8.2-apache

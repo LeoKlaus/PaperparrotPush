@@ -1,0 +1,72 @@
+<mxfile host="app.diagrams.net" modified="2023-12-14T15:05:48.737Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="T9VQQAoBjeyiyravrGIS" version="22.1.8" type="device">
+  <diagram name="Page-1" id="sTwYZMprJtxo5W7VKRJV">
+    <mxGraphModel dx="876" dy="768" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;horizontal=0;" parent="1" source="WK3nuonc_8-3RWlQ5-5M-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="440" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-16" value="1. Registers for Push Notifications" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];horizontal=0;fontSize=16;" parent="WK3nuonc_8-3RWlQ5-5M-10" vertex="1" connectable="0">
+          <mxGeometry x="-0.2992" relative="1" as="geometry">
+            <mxPoint x="-10" y="-35" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;verticalAlign=bottom;" parent="1" source="WK3nuonc_8-3RWlQ5-5M-1" target="WK3nuonc_8-3RWlQ5-5M-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="770" />
+              <mxPoint x="430" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-18" value="3. Registers Device Token" style="edgeLabel;html=1;align=center;verticalAlign=bottom;resizable=0;points=[];fontSize=16;" parent="WK3nuonc_8-3RWlQ5-5M-17" vertex="1" connectable="0">
+          <mxGeometry x="0.0034" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-1" value="Your Device" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=1;shape=mxgraph.ios7.misc.iphone;strokeColor=#c0c0c0;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="130" y="710" width="80" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-2" value="push.paperparrot.me" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=16;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.traditional_server;" parent="1" vertex="1">
+          <mxGeometry x="500" y="710" width="86.54" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-3" value="Apple Push Notification service (APNs)" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.apple;gradientColor=none;strokeColor=default;fontSize=16;" parent="1" vertex="1">
+          <mxGeometry x="114.4" y="280" width="111.2" height="126.2" as="geometry" />
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;horizontal=0;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="440" as="sourcePoint" />
+            <mxPoint x="190" y="708" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="190" y="708" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-13" value="2. Returns Device Token" style="edgeLabel;html=1;align=center;verticalAlign=top;resizable=0;points=[];horizontal=0;fontSize=16;" parent="WK3nuonc_8-3RWlQ5-5M-12" vertex="1" connectable="0">
+          <mxGeometry x="0.261" y="2" relative="1" as="geometry">
+            <mxPoint y="-39" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="WK3nuonc_8-3RWlQ5-5M-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="800" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="211" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="WK3nuonc_8-3RWlQ5-5M-20" value="4. Returns User ID" style="edgeLabel;html=1;align=center;verticalAlign=top;resizable=0;points=[];fontSize=16;" parent="WK3nuonc_8-3RWlQ5-5M-19" vertex="1" connectable="0">
+          <mxGeometry x="0.0138" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

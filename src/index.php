@@ -1,5 +1,9 @@
 <?php
+declare(strict_types=1);
+
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/db.php';
+require __DIR__ . '/userRepository.php';
 
 use Pushok\AuthProvider;
 use Pushok\Client;
@@ -12,12 +16,20 @@ $data = json_decode(file_get_contents('php://input'), true);
 if ($data) {
     if (array_key_exists("user_id", $data) && array_key_exists("document_id", $data)) {
 
-        $userTokens = getDeviceTokensForUser($data["user_id"]);
+        $connection = pushDbConnect();
+        try {
+            $userTokens = getDeviceTokensForUser($connection, $data["user_id"]);
 
-        if (array_key_exists("document_title", $data)) {
-            sendNotification($userTokens, $data["document_id"], $data["document_title"]);
-        } else {
-            sendNotification($userTokens, $data["document_id"]);
+            if (!$userTokens) {
+                http_response_code(400);
+                echo "User {$data['user_id']} does not exist!";
+                exit();
+            }
+
+            $documentTitle = array_key_exists("document_title", $data) ? $data["document_title"] : null;
+            sendNotification($connection, $userTokens, $data["document_id"], $documentTitle);
+        } finally {
+            pg_close($connection);
         }
     } else {
         http_response_code(400);
@@ -29,42 +41,7 @@ if ($data) {
     die();
 }
 
-function getDeviceTokensForUser($user_id) {
-    
-    $db_user = getenv("POSTGRES_USER");
-    $db_pass = getenv("POSTGRES_PASSWORD");
-    $conn_string = "host=database port=5432 dbname=pushusers user=$db_user password=$db_pass";
-    $connection = pg_connect($conn_string);
-
-    $queryResult = pg_query($connection, "SELECT devicetoken FROM usertokens WHERE user_id = '$user_id'");
-
-    $tokens = [];
-    if (pg_num_rows($queryResult) >= 1) {
-        $resultingRows = pg_fetch_all($queryResult);
-        foreach($resultingRows as $result) {
-            array_push($tokens, $result["devicetoken"]);
-        }
-        return $tokens;
-    } else {
-        http_response_code(400);
-        echo "User $user_id does not exist!";
-    }
-
-    pg_close($connection);
-}
-
-function removeDevice($tokenToRemove) {
-    $db_user = getenv("POSTGRES_USER");
-    $db_pass = getenv("POSTGRES_PASSWORD");
-    $conn_string = "host=database port=5432 dbname=pushusers user=$db_user password=$db_pass";
-    $connection = pg_connect($conn_string);
-
-    $queryResult = pg_query($connection, "DELETE FROM usertokens 
-    WHERE devicetoken = '$tokenToRemove'");
-    pg_close($connection);
-}
-
-function sendNotification($deviceTokens, $document_id, $document_title = null)
+function sendNotification(\PgSql\Connection $connection, $deviceTokens, $document_id, $document_title = null)
 {
 
     $isProductionEnv = strtolower(getenv('IS_PRODUCTION')) === "true";
@@ -88,7 +65,7 @@ function sendNotification($deviceTokens, $document_id, $document_title = null)
     } else {
         $alert = $alert->setLocKey("DOCUMENT_ADDED_GENERIC");
     }
-    
+
     $payload = Payload::create()->setAlert($alert);
 
     //set notification sound to default
@@ -125,7 +102,7 @@ function sendNotification($deviceTokens, $document_id, $document_title = null)
         $response->get410Timestamp();
 
         if($response->getStatusCode() == 410) {
-            removeDevice($response->getDeviceToken());
+            deleteDeviceToken($connection, $response->getDeviceToken());
             $temp = [
                 "deviceToken" => $response->getDeviceToken(),
                 "reasonPhrase" => $response->getReasonPhrase(),
@@ -155,5 +132,3 @@ function sendNotification($deviceTokens, $document_id, $document_title = null)
     header("Content-Type: application/json");
     echo json_encode($json_response);
 }
-exit();
-?>

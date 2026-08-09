@@ -1,7 +1,7 @@
 # Paperparrot Push Notification Service
 
 This repository holds the server-side implementation of the Paperparrot push notification service.
-Below, you'll find a graphic illustrating how this works. If you want to set up push notifications with your Paperless instance and Paperparrot, follow the [instructions here](https://paperparrot.me/docs/tutorial-advanced/push-notifications)
+Below, you'll find a graphic illustrating how it works. If you want to set up push notifications with your Paperless instance and Paperparrot, follow the [instructions here](https://paperparrot.me/docs/tutorial-advanced/push-notifications)
 
 ## How does this work?
 
@@ -20,7 +20,7 @@ The only information the Push server stores is the absolute minimum it needs to 
 
 ![Paperparrot Receiving Notifications](./images/receiving-notifications.png)
 
-No information about your document other than the ID ever leaving your server. Once you tap the push notification on your device, Paperparrot will connect directly to your server to download the document and all other information.
+No information about your document other than the ID is ever leaving your server. Once you tap the push notification on your device, Paperparrot will connect directly to your server to download the document.
 
 ## Security
 
@@ -30,9 +30,9 @@ If you find any security issues with push.paperparrot.me, please disclose them a
 ## Licensing
 
 The Push service uses the following two libraries under their respective licenses:
-https://github.com/ramsey/uuid
-https://github.com/edamov/pushok
+- https://github.com/ramsey/uuid
+- https://github.com/edamov/pushok
 
-As of now, PaperparrotPush should be considered source-available. While you can see, download and fork this code, it is not licensed under any open source license.
+As of now, PaperparrotPush should be considered [source-available](https://en.wikipedia.org/wiki/Source-available_software). While you can see, download and fork this code, it is not licensed under any open source license.
 
 If you want to use this implementation for a project or your own app, please let me know!

@@ -1,0 +1,27 @@
+FROM composer:2 AS vendor
+
+WORKDIR /tmp/
+
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+
+RUN composer install \
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-scripts \
+    --prefer-dist
+
+FROM php:8.2-cli
+
+RUN apt-get update \
+    && apt-get install -y libpq-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install pdo_pgsql pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY . /app
+COPY --from=vendor /tmp/vendor/ /app/vendor/
+
+CMD ["php", "vendor/bin/phpunit"]
