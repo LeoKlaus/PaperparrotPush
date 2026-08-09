@@ -7,7 +7,17 @@ Below, you'll find a graphic illustrating how it works. If you want to set up pu
 
 ### Registering for Notifications
 
-![Paperparrot Signing Up for Notifications](./images/signing-up.png)
+```mermaid
+sequenceDiagram
+    participant Device as Your Device
+    participant APNs as Apple Push Notification service (APNs)
+    participant Server as push.paperparrot.me
+
+    Device->>APNs: 1. Registers for Push Notifications
+    APNs-->>Device: 2. Returns Device Token
+    Device->>Server: 3. Registers Device Token
+    Server-->>Device: 4. Returns User ID
+```
 
 No information regarding you or your server is transmitted to the Paperparrot push server.
 The only information the Push server stores is the absolute minimum it needs to function:
@@ -18,7 +28,19 @@ The only information the Push server stores is the absolute minimum it needs to 
 
 ### Sending/Receiving Notifications
 
-![Paperparrot Receiving Notifications](./images/receiving-notifications.png)
+```mermaid
+sequenceDiagram
+    participant PaperlessServer as Your Paperless-ngx Server
+    participant PushServer as push.paperparrot.me
+    participant APNs as Apple Push Notification service (APNs)
+    participant Device as Your Device
+
+    PaperlessServer->>PushServer: 1. Sends Notification (user_id: ABC123, document_id: 123)
+    PushServer->>APNs: 2. Sends signed push for DeviceToken of user_id ABC123 (payload: document_id 123)
+    APNs->>Device: 3. Delivers Notification (document_id: 123)
+    Device->>PaperlessServer: 4. Requests Document 123
+    PaperlessServer-->>Device: 5. Sends Document 123
+```
 
 No information about your document other than the ID is ever leaving your server. Once you tap the push notification on your device, Paperparrot will connect directly to your server to download the document.
 
