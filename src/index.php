@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/db.php';
+require __DIR__ . '/lib.php';
 require __DIR__ . '/userRepository.php';
 
 use Pushok\AuthProvider;
@@ -87,43 +88,25 @@ function sendNotification(\PgSql\Connection $connection, $deviceTokens, $documen
     $json_response = array();
 
     foreach ($responses as $response) {
-        // The device token
-        $response->getDeviceToken();
-        // A canonical UUID that is the unique ID for the notification. E.g. 123e4567-e89b-12d3-a456-4266554400a0
-        $response->getApnsId();
-        // Status code. E.g. 200 (Success), 410 (The device token is no longer active for the topic.)
-        $response->getStatusCode();
-        // E.g. The device token is no longer active for the topic.
-        $response->getReasonPhrase();
-        // E.g. Unregistered
-        $response->getErrorReason();
-        // E.g. The device token is inactive for the specified topic.
-        $response->getErrorDescription();
-        $response->get410Timestamp();
+        $statusCode = $response->getStatusCode();
+        $errorReason = $response->getErrorReason();
 
-        if($response->getStatusCode() == 410) {
+        if (shouldRemoveDeviceToken($statusCode, $errorReason)) {
             deleteDeviceToken($connection, $response->getDeviceToken());
-            $temp = [
-                "deviceToken" => $response->getDeviceToken(),
-                "reasonPhrase" => $response->getReasonPhrase(),
-                "errorReason" => $response->getErrorReason(),
-                "errorDescription" => $response->getErrorDescription()
-            ];
-            array_push($json_response, $temp);
-            http_response_code(400);
-        } else if($response->getStatusCode() != 200) {
-            $temp = [
-                "deviceToken" => $response->getDeviceToken(),
-                "reasonPhrase" => $response->getReasonPhrase(),
-                "errorReason" => $response->getErrorReason(),
-                "errorDescription" => $response->getErrorDescription()
-            ];
-            array_push($json_response, $temp);
-            http_response_code(400);
-        } else {
+        }
+
+        if ($statusCode == 200) {
             $temp = [
                 "deviceToken" => $response->getDeviceToken(),
                 "reasonPhrase" => $response->getReasonPhrase()
+            ];
+            array_push($json_response, $temp);
+        } else {
+            $temp = [
+                "deviceToken" => $response->getDeviceToken(),
+                "reasonPhrase" => $response->getReasonPhrase(),
+                "errorReason" => $errorReason,
+                "errorDescription" => $response->getErrorDescription()
             ];
             array_push($json_response, $temp);
         }
