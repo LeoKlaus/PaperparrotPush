@@ -10,7 +10,7 @@ function pushDbConnect(): \PgSql\Connection
     $pass = getenv('POSTGRES_PASSWORD');
 
     $connString = "host=$host port=$port dbname=$dbname user=$user password=$pass";
-    $connection = pg_connect($connString);
+    $connection = @pg_connect($connString);
     if ($connection === false) {
         throw new \RuntimeException('Could not connect to the database.');
     }
