@@ -13,11 +13,13 @@ RUN composer install \
     --no-dev \
     --prefer-dist
 
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 RUN apt-get update \
     && apt-get install libpq-dev -y \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql && docker-php-ext-install pdo_pgsql pgsql
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 COPY . /var/www/html
 COPY --from=vendor /tmp/vendor/ /var/www/html/vendor/

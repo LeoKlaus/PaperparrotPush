@@ -1,6 +1,6 @@
 {
     "require": {
-        "edamov/pushok": "^0.15.6",
+        "edamov/pushok": "^0.19",
         "ramsey/uuid": "^4.7"
     },
     "require-dev": {
