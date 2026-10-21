@@ -6,6 +6,33 @@ function isValidUserId(string $userId): bool
     return (bool) preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $userId);
 }
 
+function normalizeInstanceId(mixed $value): ?string
+{
+    return is_string($value) && $value !== '' ? $value : null;
+}
+
+/**
+ * Builds the APNs payload for one notification — pulled out of index.php so it's testable without
+ * an APNs client or network call. The alert text is localized client-side (loc keys) and never
+ * contains anything about the document itself: the document is identified only via the
+ * document_id custom value, and instance_id is relayed only when present.
+ */
+function buildNotificationPayload(mixed $documentId, ?string $instanceId): \Pushok\Payload
+{
+    $alert = \Pushok\Payload\Alert::create()
+        ->setTitleLocKey("New Document consumed")
+        ->setLocKey("DOCUMENT_ADDED_GENERIC");
+
+    $payload = \Pushok\Payload::create()->setAlert($alert)->setSound('default');
+    $payload->setCustomValue('document_id', $documentId);
+
+    if ($instanceId !== null) {
+        $payload->setCustomValue('instance_id', $instanceId);
+    }
+
+    return $payload;
+}
+
 /**
  * Shapes health.php's response: pulled out of the endpoint so the status-code/body mapping is
  * testable without a real database connection. $databaseReachable is the one thing the endpoint

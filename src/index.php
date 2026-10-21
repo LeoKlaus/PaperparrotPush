@@ -9,8 +9,6 @@ require __DIR__ . '/userRepository.php';
 use Pushok\AuthProvider;
 use Pushok\Client;
 use Pushok\Notification;
-use Pushok\Payload;
-use Pushok\Payload\Alert;
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -27,8 +25,8 @@ if ($data) {
                 exit();
             }
 
-            $documentTitle = array_key_exists("document_title", $data) ? $data["document_title"] : null;
-            sendNotification($connection, $userTokens, $data["document_id"], $documentTitle);
+            $instanceId = normalizeInstanceId($data["instance_id"] ?? null);
+            sendNotification($connection, $userTokens, $data["document_id"], $instanceId);
         } finally {
             pg_close($connection);
         }
@@ -42,7 +40,7 @@ if ($data) {
     die();
 }
 
-function sendNotification(\PgSql\Connection $connection, $deviceTokens, $document_id, $document_title = null)
+function sendNotification(\PgSql\Connection $connection, $deviceTokens, $document_id, ?string $instance_id = null)
 {
 
     $isProductionEnv = strtolower(getenv('IS_PRODUCTION')) === "true";
@@ -57,23 +55,7 @@ function sendNotification(\PgSql\Connection $connection, $deviceTokens, $documen
 
     $authProvider = AuthProvider\Token::create($options);
 
-    $alert = Alert::create()->setTitleLocKey("New Document consumed");
-    if($document_title)
-    {
-        //$alert = $alert->setBody("Document " + $document_title + " was added to your server!");
-        $alert = $alert->setLocKey("DOCUMENT_ADDED_FORMAT");
-        $alert = $alert->setLocArgs([$document_title]);
-    } else {
-        $alert = $alert->setLocKey("DOCUMENT_ADDED_GENERIC");
-    }
-
-    $payload = Payload::create()->setAlert($alert);
-
-    //set notification sound to default
-    $payload->setSound('default');
-
-    //add custom value to your notification, needs to be customized
-    $payload->setCustomValue('document_id', $document_id);
+    $payload = buildNotificationPayload($document_id, $instance_id);
 
     $notifications = [];
     foreach ($deviceTokens as $deviceToken) {
